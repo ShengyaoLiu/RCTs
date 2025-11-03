@@ -5,7 +5,7 @@ import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'RCT Quest — Learn Randomised Controlled Trials',
+  title: 'RCT Quest - Learn Randomised Controlled Trials',
   description: 'An interactive explainer of RCTs for everyone.',
   generator: 'Sharon_ShengyaoLiu',
 }
