@@ -1,23 +1,34 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { ArrowRight, ArrowLeft, Play, Pause, CheckCircle2, XCircle, Sparkles } from "lucide-react"
+import { useState, useEffect,useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import {
+  ArrowRight,
+  ArrowLeft,
+  Play,
+  Pause,
+  CheckCircle2,
+  XCircle,
+  Sparkles,
+  ChevronDown,
+} from "lucide-react";
+import React from "react";
 
 interface VideoQuizModuleProps {
-  moduleIndex: number
-  title: string
-  videoTitle: string
-  onComplete: (moduleIndex: number, isCorrect: boolean) => void
-  onBack: () => void
+  moduleIndex: number;
+  title: string;
+  videoTitle: string;
+  onComplete: (moduleIndex: number, isCorrect: boolean) => void;
+  onBack: () => void;
+  /** NEW: transcript (plain text or JSX) */
+  transcript?: string | React.ReactNode;
 }
 
 const quizData = [
   {
-    // Module 0: What Are RCTs?
     question: "What is the main purpose of randomisation in an RCT?",
     options: [
       "To make the study more complicated",
@@ -29,10 +40,9 @@ const quizData = [
     explanation:
       "Correct! Randomisation ensures that the groups being compared are similar in all ways except for the treatment they receive. This creates a fair comparison and reduces bias.",
     videoDescription:
-      "RCTs are scientific experiments that test whether a treatment works by comparing it to a control group. The key is random assignment - like flipping a coin to decide who gets what treatment. This ensures fair comparison and helps us trust the results.",
+      "RCTs are scientific experiments that test whether a treatment works by comparing it to a control group. Random assignment—like flipping a coin—keeps comparisons fair.",
   },
   {
-    // Module 1: How Do RCTs Work?
     question: "What is a placebo?",
     options: [
       "A new type of medication",
@@ -42,12 +52,11 @@ const quizData = [
     ],
     correctAnswer: 1,
     explanation:
-      "Exactly right! A placebo is a fake treatment that looks like the real treatment but contains no active ingredients. It helps researchers determine if improvements are due to the treatment itself or the placebo effect.",
+      "Exactly right! A placebo looks like the real treatment but contains no active ingredients. It helps check whether improvements are due to the treatment itself or expectations.",
     videoDescription:
-      "Running an RCT involves several steps: recruiting participants, randomly assigning them to groups, giving treatments (including placebos), measuring outcomes, and analyzing results. Double-blinding means neither patients nor doctors know who gets what treatment, preventing bias.",
+      "Typical steps: recruit → randomise → give treatments (incl. placebo) → measure outcomes → analyse. Double-blinding means neither patients nor staff know who gets what.",
   },
   {
-    // Module 2: Why Do RCTs Matter?
     question: "Which of the following is a key strength of RCTs?",
     options: [
       "They are always quick and cheap",
@@ -57,72 +66,84 @@ const quizData = [
     ],
     correctAnswer: 2,
     explanation:
-      "Perfect! RCTs can help establish causation - they can prove that a treatment causes an effect. This is because randomisation and controlled conditions minimize other factors that could explain the results. This makes RCTs the gold standard for testing treatments.",
+      "Perfect! Thanks to randomisation and control, RCTs can support cause-and-effect conclusions, which is why they’re the gold standard.",
     videoDescription:
-      "RCTs are crucial for evidence-based medicine. They help doctors know which treatments actually work, protect patients from ineffective or harmful treatments, and guide healthcare policy. While they have limitations (cost, time, ethics), they remain our best tool for proving what works in medicine.",
+      "RCTs guide evidence-based care, protecting patients from ineffective or harmful treatments. They can be costly/slow but remain our best proof of what works.",
   },
-]
+];
 
-export default function VideoQuizModule({ moduleIndex, title, videoTitle, onComplete, onBack }: VideoQuizModuleProps) {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [hasWatched, setHasWatched] = useState(false)
-  const [showQuiz, setShowQuiz] = useState(false)
-  const [selectedAnswer, setSelectedAnswer] = useState<number | undefined>()
-  const [showFeedback, setShowFeedback] = useState(false)
+export default function VideoQuizModule({
+  moduleIndex,
+  title,
+  videoTitle,
+  onComplete,
+  onBack,
+  transcript,
+}: VideoQuizModuleProps) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasWatched, setHasWatched] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | undefined>();
+  const [showFeedback, setShowFeedback] = useState(false);
 
-  const data = quizData[moduleIndex]
+  const data = quizData[moduleIndex];
+  
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying)
+    setIsPlaying(!isPlaying);
     if (!hasWatched) {
       setTimeout(() => {
-        setHasWatched(true)
-        setIsPlaying(false)
-      }, 3000) // Simulate video watching
+        setHasWatched(true);
+        setIsPlaying(false);
+      }, 3000); // simulate video time
     }
-  }
+  };
+  
+  const handleReplay = () => {
+  setIsPlaying(true);
+};
+
 
   const handleContinueToQuiz = () => {
-    setShowQuiz(true)
-  }
-
-  const handleSubmitAnswer = () => {
-    setShowFeedback(true)
-  }
+    setShowQuiz(true);
+    // bring the card header to the top of the viewport
+    rootRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const handleSubmitAnswer = () => setShowFeedback(true);
 
   const handleNext = () => {
-    const isCorrect = selectedAnswer === data.correctAnswer
-    onComplete(moduleIndex, isCorrect)
-  }
+    const isCorrect = selectedAnswer === data.correctAnswer;
+    onComplete(moduleIndex, isCorrect);
+  };
 
   const triggerConfetti = () => {
-    const colors = ["#8b5cf6", "#10b981", "#3b82f6", "#f59e0b", "#ec4899"]
-    const confettiCount = 50
-
+    const colors = ["#8b5cf6", "#10b981", "#3b82f6", "#f59e0b", "#ec4899"];
+    const confettiCount = 50;
     for (let i = 0; i < confettiCount; i++) {
-      const confetti = document.createElement("div")
-      confetti.className = "confetti"
-      confetti.style.left = Math.random() * 100 + "vw"
-      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
-      confetti.style.animationDelay = Math.random() * 0.5 + "s"
-      confetti.style.animationDuration = 2 + Math.random() * 1 + "s"
-      document.body.appendChild(confetti)
-
-      setTimeout(() => confetti.remove(), 3500)
+      const confetti = document.createElement("div");
+      confetti.className = "confetti";
+      confetti.style.left = Math.random() * 100 + "vw";
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 0.5 + "s";
+      confetti.style.animationDuration = 2 + Math.random() * 1 + "s";
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 3500);
     }
-  }
+  };
 
   useEffect(() => {
     if (showFeedback && selectedAnswer === data.correctAnswer) {
-      triggerConfetti()
+      triggerConfetti();
     }
-  }, [showFeedback, selectedAnswer, data.correctAnswer])
+  }, [showFeedback, selectedAnswer, data.correctAnswer]);
 
-  const isCorrect = selectedAnswer === data.correctAnswer
+  const isCorrect = selectedAnswer === data.correctAnswer;
+  const transcriptId = `transcript-${moduleIndex}`;
 
   if (!showQuiz) {
     return (
-      <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
+      <div ref={rootRef} className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
         <Button onClick={onBack} variant="ghost" className="gap-2">
           <ArrowLeft className="h-4 w-4" />
           Back
@@ -143,33 +164,82 @@ export default function VideoQuizModule({ moduleIndex, title, videoTitle, onComp
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Video Player Mockup */}
-            <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg overflow-hidden border-2 border-primary/20">
-              <div className="absolute inset-0 flex items-center justify-center">
-                {!isPlaying ? (
-                  <div className="text-center space-y-4">
-                    <div className="mx-auto h-20 w-20 rounded-full bg-primary flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                      <Play className="h-10 w-10 text-primary-foreground" />
-                    </div>
-                    <p className="text-sm text-muted-foreground">Click to watch</p>
-                  </div>
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                    <div className="text-center space-y-4 p-8">
-                      <div className="mx-auto h-16 w-16 rounded-full bg-primary/30 flex items-center justify-center animate-pulse">
-                        <Sparkles className="h-8 w-8 text-primary" />
-                      </div>
-                      <p className="text-lg font-medium">Video Playing...</p>
-                      <p className="text-sm text-muted-foreground max-w-md">{data.videoDescription}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <button
-                onClick={handlePlayPause}
-                className="absolute inset-0 w-full h-full cursor-pointer"
-                aria-label={isPlaying ? "Pause video" : "Play video"}
-              />
-            </div>
+<div className="relative aspect-video bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg overflow-hidden border-2 border-primary/20">
+  <div className="absolute inset-0 flex items-center justify-center">
+    {!isPlaying ? (
+      !hasWatched ? (
+        // BEFORE watching — show "Click to watch"
+        <div className="text-center space-y-4">
+          <div className="mx-auto h-20 w-20 rounded-full bg-primary flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
+            <Play className="h-10 w-10 text-primary-foreground" />
+          </div>
+          <p className="text-sm text-muted-foreground">Click to watch</p>
+        </div>
+      ) : (
+        // AFTER watching — show "Replay" or "Continue to Quiz"
+        <div className="text-center space-y-4 p-6">
+          <p className="text-sm text-muted-foreground">You’ve finished this video.</p>
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <Button onClick={handleReplay} variant="outline" className="gap-2 bg-transparent">
+              <Play className="h-4 w-4" />
+              Replay
+            </Button>
+            <Button onClick={handleContinueToQuiz} className="gap-2 shadow-lg">
+              Continue to Quiz
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )
+    ) : (
+      // PLAYING state
+      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+        <div className="text-center space-y-4 p-8">
+          <div className="mx-auto h-16 w-16 rounded-full bg-primary/30 flex items-center justify-center animate-pulse">
+            <Sparkles className="h-8 w-8 text-primary" />
+          </div>
+          <p className="text-lg font-medium">Video Playing...</p>
+          <p className="text-sm text-muted-foreground max-w-md">{data.videoDescription}</p>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Full-area click layer:
+      - enabled during first watch
+      - disabled after finished so buttons are clickable */}
+  <button
+    onClick={handlePlayPause}
+    className={`absolute inset-0 w-full h-full ${hasWatched ? "pointer-events-none" : "cursor-pointer"}`}
+    aria-label={isPlaying ? "Pause video" : "Play video"}
+  />
+</div>
+
+
+            {/* NEW: Transcript dropdown (renders only if provided) */}
+            {transcript ? (
+              <details className="group rounded-lg border border-border bg-card">
+                <summary
+                  className="flex cursor-pointer list-none items-center justify-between gap-2 px-4 py-3
+                             text-sm font-medium hover:bg-muted/50"
+                  aria-controls={transcriptId}
+                >
+                  <span>Transcript</span>
+                  <ChevronDown
+                    className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180"
+                    aria-hidden
+                  />
+                </summary>
+                <div
+                  id={transcriptId}
+                  role="region"
+                  aria-label={`${videoTitle} transcript`}
+                  className="px-4 pb-4 pt-0 text-sm leading-7 text-muted-foreground whitespace-pre-wrap"
+                >
+                  {transcript}
+                </div>
+              </details>
+            ) : null}
 
             <div className="flex items-center justify-center gap-4">
               <Button onClick={handlePlayPause} variant="outline" size="lg" className="gap-2 bg-transparent">
@@ -195,11 +265,11 @@ export default function VideoQuizModule({ moduleIndex, title, videoTitle, onComp
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div ref={rootRef} className="max-w-3xl mx-auto space-y-8 animate-in fade-in duration-500">
       <Button onClick={onBack} variant="ghost" className="gap-2">
         <ArrowLeft className="h-4 w-4" />
         Back
@@ -256,7 +326,9 @@ export default function VideoQuizModule({ moduleIndex, title, videoTitle, onComp
 
           {showFeedback && (
             <Card
-              className={`${isCorrect ? "border-accent bg-accent/10" : "border-destructive bg-destructive/10"} animate-in slide-in-from-bottom duration-300`}
+              className={`${
+                isCorrect ? "border-accent bg-accent/10" : "border-destructive bg-destructive/10"
+              } animate-in slide-in-from-bottom duration-300`}
             >
               <CardContent className="pt-6">
                 <div className="flex items-start gap-3">
@@ -278,12 +350,7 @@ export default function VideoQuizModule({ moduleIndex, title, videoTitle, onComp
 
           <div className="flex justify-end gap-3">
             {!showFeedback ? (
-              <Button
-                onClick={handleSubmitAnswer}
-                disabled={selectedAnswer === undefined}
-                size="lg"
-                className="shadow-lg"
-              >
+              <Button onClick={handleSubmitAnswer} disabled={selectedAnswer === undefined} size="lg" className="shadow-lg">
                 Submit Answer
               </Button>
             ) : (
@@ -296,5 +363,5 @@ export default function VideoQuizModule({ moduleIndex, title, videoTitle, onComp
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

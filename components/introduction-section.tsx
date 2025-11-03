@@ -17,7 +17,10 @@ export default function IntroductionSection({ onNext }: IntroductionSectionProps
           Interactive Learning Adventure
         </div>
         <h2 className="text-5xl font-bold text-balance bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          Discover the Power of RCTs
+          Discover the Power of 
+		  </h2>
+		  <h2 className="text-5xl font-bold text-balance bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Randomised Clinical Trials (RCTs)
+		  
         </h2>
         <p className="text-xl text-muted-foreground text-balance">
           Join us on an exciting journey to understand how scientists prove what really works in medicine
