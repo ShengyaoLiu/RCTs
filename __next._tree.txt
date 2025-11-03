@@ -2,9 +2,9 @@
 2:I[97367,["/RCTs/_next/static/chunks/42879de7b8087bc9.js"],"ViewportBoundary"]
 4:I[97367,["/RCTs/_next/static/chunks/42879de7b8087bc9.js"],"MetadataBoundary"]
 5:"$Sreact.suspense"
-:HL["/RCTs/_next/static/chunks/9182818b1d016891.css","style"]
+:HL["/RCTs/_next/static/chunks/02f73e1a0fee2fd4.css","style"]
 :HL["/RCTs/_next/static/media/GeistMono_Variable.p.73882635.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/RCTs/_next/static/media/Geist_Variable-s.p.f19e4721.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"buildId":"o2Jrlg3htqUFC6EMurgkg","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"head":["$","$1","h",{"children":[null,["$","$L2",null,{"children":"$@3"}],["$","div",null,{"hidden":true,"children":["$","$L4",null,{"children":["$","$5",null,{"name":"Next.Metadata","children":"$@6"}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isHeadPartial":false,"staleTime":300}
+0:{"buildId":"z8SoLz6D4DCDESBk-NFZ4","tree":{"name":"","paramType":null,"paramKey":"","hasRuntimePrefetch":false,"slots":{"children":{"name":"__PAGE__","paramType":null,"paramKey":"__PAGE__","hasRuntimePrefetch":false,"slots":null,"isRootLayout":false}},"isRootLayout":true},"head":["$","$1","h",{"children":[null,["$","$L2",null,{"children":"$@3"}],["$","div",null,{"hidden":true,"children":["$","$L4",null,{"children":["$","$5",null,{"name":"Next.Metadata","children":"$@6"}]}]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"isHeadPartial":false,"staleTime":300}
 3:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
-6:[["$","title","0",{"children":"v0 App"}],["$","meta","1",{"name":"description","content":"Created with v0"}],["$","meta","2",{"name":"generator","content":"v0.app"}]]
+6:[["$","title","0",{"children":"RCT Quest — Learn Randomised Controlled Trials"}],["$","meta","1",{"name":"description","content":"An interactive explainer of RCTs for everyone."}],["$","meta","2",{"name":"generator","content":"Sharon_ShengyaoLiu"}]]
