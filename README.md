@@ -1,3 +1,3 @@
 # RCTs
 Sharon's assignment for Clinical Trials Module
-"Deployed on 2025/11/03 ÖÜÒ»  4:57:27.31" 
+"Deployed on 2025/11/03 Â» 4:57:27.31" 
